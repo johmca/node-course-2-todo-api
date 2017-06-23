@@ -22,13 +22,22 @@ const {app} = require('./../server');
 //from todo.js (its a mongoose model)
 const {Todo} = require('./../models/todo');
 
-//The tests beow assume the database is empty before running
+//Define array of docs to use in setting up inital database
+//state for testing
+const todosarray =[
+  {text:'Todo test doc'},
+  {text:'Todo test doc'},
+];
+
+//The tests beow assume the database is in an initial state before running
 //Use beforeEach() to set up initial state of database expected by
-//our tests i.e. make sure database is empty
+//our tests
 //beforeEach() runs before each test case and only completes
 //when we call done()
 beforeEach((done)=>{
-  Todo.remove({}).then(()=>{done()});//Mongoose remove() - pass empty object to select all for removal
+  Todo.remove({}).then(()=>{
+    return Todo.insertMany(todosarray);
+  }).then(()=>done());
 });
 
 //Now use describe() blocks to group our test cases logically
@@ -57,7 +66,7 @@ describe('POST /todos',()=>{
         //Get Todo docs from database to confirm that test one has been added
         //Use .find() from mongoose with no query object (return all)
         //Code up .then() to expect our todo doc to exist
-        Todo.find().then((todos)=>{
+        Todo.find({text}).then((todos)=>{
           expect(todos.length).toBe(1); //Expect a single record which we added
           expect(todos[0].text).toBe(text); //Expect the todo to have our own text
           done(); //complete the test
@@ -80,11 +89,24 @@ describe('POST /todos',()=>{
           return done(err); //This is necessary to catch errors from earlier i.e. the expect(400)
         }
         Todo.find().then((todos)=>{
-          expect(todos.length).toBe(0); //No docs expected
+          expect(todos.length).toBe(2); //No docs expected
           done();
         }).catch((e)=>{
           done(e);
         });
       });
+  });
+});
+
+//GET /todos test block
+describe('GET /todos', ()=> {
+  it('should get all todos',(done)=>{
+    request(app)
+    .get('/todos')
+    .expect(200)
+    .expect((res)=>{ //custom assertion -we define own function
+      expect(res.body.todos.length).toBe(2);
+    })
+    .end(done);
   });
 });
