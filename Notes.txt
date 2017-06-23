@@ -1,0 +1,18 @@
+
+We installed and used the following libraries
+
+express - web app framework libs
+mongodb - Mongodb No SQL type database
+Mongoose - MongoDb models library allows us to create and use schemas for Mongodb
+body-parser - helps us convert json in HTTP message body to JSON objects making it easy to interact with data 
+
+npm i express mongoose bofy-parser mongodb --save
+
+For tesing we installed
+----------------------
+Expect - test assertions librart
+Mocha - unit test library (even though we installed previously globally we install in the app folder too)
+Nodemon - allows us to autorestart app after changes and run scripts
+Supertest - HTTP testing assertions
+
+npm i expect mocha nodemon supertest --save-dev

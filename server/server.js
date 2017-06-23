@@ -41,3 +41,7 @@ var port = 3000;
 app.listen(port,()=>{
   console.log(`Listening on port ${port}`)
 });
+
+//Export the app from this module
+module.exports = {app}; //ES6 syntax - set app property of the exported
+                        //object to the app variable in this file
